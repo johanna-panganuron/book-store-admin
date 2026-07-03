@@ -36,6 +36,11 @@ export default function BooksPage() {
 
   const canViewCostPrice = hasPermission('books.cost_price.view')
 
+  const filteredBooks = books.filter(b => 
+    b.title.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+    b.author.toLowerCase().includes(debouncedSearch.toLowerCase())
+  )
+
   useEffect(() => {
     const timer = setTimeout(() => {
       if (debouncedSearch !== searchTerm) {
@@ -154,22 +159,25 @@ export default function BooksPage() {
         {/* Empty */}
         {!loading && !error && books.length === 0 && (
           <div className="bg-white rounded-xl border border-gray-100 p-12 text-center">
-            {debouncedSearch ? (
-              <div className="flex flex-col items-center justify-center space-y-3">
-                <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center">
-                  <SearchX className="w-6 h-6 text-gray-400" />
-                </div>
-                <p className="text-gray-500 text-sm">No books found matching "<span className="font-medium text-gray-900">{debouncedSearch}</span>"</p>
-                <button onClick={() => setSearchTerm('')} className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors text-sm">Clear search</button>
+            <p className="text-gray-400 text-sm">No books found.</p>
+          </div>
+        )}
+
+        {/* Empty Search */}
+        {!loading && !error && books.length > 0 && filteredBooks.length === 0 && (
+          <div className="bg-white rounded-xl border border-gray-100 p-12 text-center">
+            <div className="flex flex-col items-center justify-center space-y-3">
+              <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center">
+                <SearchX className="w-6 h-6 text-gray-400" />
               </div>
-            ) : (
-              <p className="text-gray-400 text-sm">No books found.</p>
-            )}
+              <p className="text-gray-500 text-sm">No books found matching "<span className="font-medium text-gray-900">{debouncedSearch}</span>"</p>
+              <button onClick={() => setSearchTerm('')} className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors text-sm">Clear search</button>
+            </div>
           </div>
         )}
 
         {/* Table */}
-        {!loading && !error && books.length > 0 && (
+        {!loading && !error && filteredBooks.length > 0 && (
           <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -190,7 +198,7 @@ export default function BooksPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                  {books.map(book => (
+                  {filteredBooks.map(book => (
                     <tr key={book.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4 font-medium text-gray-900">{book.title}</td>
                       <td className="px-6 py-4 text-gray-600">{book.author}</td>
