@@ -51,11 +51,11 @@ export default function BooksPage() {
     return () => clearTimeout(timer)
   }, [searchTerm, debouncedSearch])
 
-  const fetchBooks = async (p: number, search: string) => {
+  const fetchBooks = async (p: number) => {
     setLoading(true)
     setError('')
     try {
-      const res = await getBooks(p, search)
+      const res = await getBooks(p)
       const data = res.data
       setBooks(data.data ?? data)
       if (data.meta) {
@@ -81,8 +81,8 @@ export default function BooksPage() {
   }
 
   useEffect(() => {
-    fetchBooks(page, debouncedSearch)
-  }, [page, debouncedSearch])
+    fetchBooks(page)
+  }, [page])
 
   const handleEditSuccess = (updated: Book) => {
     setBooks(prev => prev.map(b => b.id === updated.id ? updated : b))
@@ -152,7 +152,7 @@ export default function BooksPage() {
         {!loading && error && (
           <div className="bg-red-50 border border-red-100 rounded-xl p-6 text-center">
             <p className="text-red-600 text-sm">{error}</p>
-            <button onClick={() => fetchBooks(page, debouncedSearch)} className="mt-3 text-sm text-red-700 underline">Try again</button>
+            <button onClick={() => fetchBooks(page)} className="mt-3 text-sm text-red-700 underline">Try again</button>
           </div>
         )}
 
