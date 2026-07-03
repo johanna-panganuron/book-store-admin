@@ -1,4 +1,3 @@
-import type { FormEvent } from 'react'
 import { LogOut } from 'lucide-react'
 
 interface Props {
