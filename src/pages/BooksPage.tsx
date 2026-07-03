@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getBooks } from '../api/client'
 import { useAuth } from '../context/AuthContext'
-import { LogOut, Edit2, Eye, ChevronLeft, ChevronRight, BookOpen, BookText, User, Tag, Settings } from 'lucide-react'
+import { LogOut, Edit2, Eye, ChevronLeft, ChevronRight, BookOpen, BookText, User, Tag, Settings, Search, X, SearchX } from 'lucide-react'
 import CostPriceModal from '../components/CostPriceModal'
 import EditBookModal from '../components/EditBookModal'
 import SignOutModal from '../components/SignOutModal'
@@ -31,14 +31,26 @@ export default function BooksPage() {
   const [costPriceBook, setCostPriceBook] = useState<Book | null>(null)
   const [editBook, setEditBook] = useState<Book | null>(null)
   const [showSignOut, setShowSignOut] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
 
   const canViewCostPrice = hasPermission('books.cost_price.view')
 
-  const fetchBooks = async (p: number) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (debouncedSearch !== searchTerm) {
+        setPage(1)
+        setDebouncedSearch(searchTerm)
+      }
+    }, 400)
+    return () => clearTimeout(timer)
+  }, [searchTerm, debouncedSearch])
+
+  const fetchBooks = async (p: number, search: string) => {
     setLoading(true)
     setError('')
     try {
-      const res = await getBooks(p)
+      const res = await getBooks(p, search)
       const data = res.data
       setBooks(data.data ?? data)
       if (data.meta) {
@@ -64,8 +76,8 @@ export default function BooksPage() {
   }
 
   useEffect(() => {
-    fetchBooks(page)
-  }, [page])
+    fetchBooks(page, debouncedSearch)
+  }, [page, debouncedSearch])
 
   const handleEditSuccess = (updated: Book) => {
     setBooks(prev => prev.map(b => b.id === updated.id ? updated : b))
@@ -104,6 +116,24 @@ export default function BooksPage() {
               <p className="text-sm text-gray-500 mt-0.5">{pagination.total} total books</p>
             )}
           </div>
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search current page..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-9 pr-9 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 w-72 sm:w-80 transition-all bg-white shadow-sm"
+            />
+            {searchTerm && (
+              <button 
+                onClick={() => setSearchTerm('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Loading */}
@@ -117,14 +147,24 @@ export default function BooksPage() {
         {!loading && error && (
           <div className="bg-red-50 border border-red-100 rounded-xl p-6 text-center">
             <p className="text-red-600 text-sm">{error}</p>
-            <button onClick={() => fetchBooks(page)} className="mt-3 text-sm text-red-700 underline">Try again</button>
+            <button onClick={() => fetchBooks(page, debouncedSearch)} className="mt-3 text-sm text-red-700 underline">Try again</button>
           </div>
         )}
 
         {/* Empty */}
         {!loading && !error && books.length === 0 && (
           <div className="bg-white rounded-xl border border-gray-100 p-12 text-center">
-            <p className="text-gray-400 text-sm">No books found.</p>
+            {debouncedSearch ? (
+              <div className="flex flex-col items-center justify-center space-y-3">
+                <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center">
+                  <SearchX className="w-6 h-6 text-gray-400" />
+                </div>
+                <p className="text-gray-500 text-sm">No books found matching "<span className="font-medium text-gray-900">{debouncedSearch}</span>"</p>
+                <button onClick={() => setSearchTerm('')} className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors text-sm">Clear search</button>
+              </div>
+            ) : (
+              <p className="text-gray-400 text-sm">No books found.</p>
+            )}
           </div>
         )}
 

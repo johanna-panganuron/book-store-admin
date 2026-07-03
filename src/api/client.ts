@@ -19,8 +19,8 @@ export const logout = () => api.post('/logout')
 
 export const getMe = () => api.get('/me')
 
-export const getBooks = (page: number = 1) =>
-  api.get('/books', { params: { page } })
+export const getBooks = (page: number = 1, search: string = '') =>
+  api.get('/books', { params: { page, ...(search && { search }) } })
 
 export const updateBook = (id: number, data: {
   title: string
