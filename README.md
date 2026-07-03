@@ -1,55 +1,57 @@
 # Bookstore Admin
 
-A small React (Vite) admin UI for an online bookstore, built as a technical exam for YM Cargo.
+A clean, responsive React (Vite) admin UI for an online bookstore, built as a technical assessment for YM Cargo.
+
+## Live Demo
+[https://book-store-admin-alpha.vercel.app](https://book-store-admin-alpha.vercel.app) *(Update this with your actual Vercel URL)*
 
 ## Tech Stack
-
 - React 19 + TypeScript
 - Vite
 - Tailwind CSS v4
 - React Router DOM
 - Axios
+- Lucide React (Icons)
 
 ## How to Run
 
+1. Install dependencies:
 ```bash
 npm install
+```
+
+2. Start the development server:
+```bash
 npm run dev
 ```
 
-Open http://localhost:5173
+3. Open `http://localhost:5173` in your browser.
 
 ## Test Accounts
-
 - **Manager** (has cost price permission): `manager@test.com` / `password`
 - **Staff** (no cost price permission): `staff@test.com` / `password`
 
-## Features
-
-1. **Login** — CSRF-safe login with Laravel Sanctum (cookie-based). Field-level validation errors displayed next to inputs.
-2. **Books list** — Paginated table with title, author, and retail price.
-3. **Permission-gated cost price** — "View cost price" button is only rendered (not just hidden) for users with `books.cost_price.view` permission. Staff users never see the button at all.
-4. **Sensitive data flow** — Cost price is never in the DOM until a reason is submitted and the API call succeeds.
-5. **Edit book** — Inline modal form with 422 field error handling per field.
-6. **Logout** — Clears session via API.
+## Features Implemented
+- **Modern UI/UX** — Designed with a premium, minimal aesthetic using the "Plus Jakarta Sans" font, floating labels on login inputs, and smooth micro-animations.
+- **Authentication** — Bearer token authentication. Field-level validation errors are mapped directly from the API to the UI inputs.
+- **Paginated Books List** — Fetches books from the API with full server-side pagination support.
+- **Client-Side Search** — A responsive search bar that instantly filters the current page of books by title or author, including a custom empty state UI.
+- **Permission-Gated Cost Price** — The "View cost price" button strictly respects the `books.cost_price.view` permission from the `/api/me` payload.
+- **Sensitive Data Protection** — Cost price requires a 5+ character reason via a modal. The price is never exposed in the DOM until the `POST` request succeeds.
+- **Edit Book Form** — Modal form handling `PUT` updates, capturing 422 validation errors specifically to the correct fields.
+- **Toast Notifications** — Non-blocking, animated success toast notifications confirming when specific books are successfully edited.
 
 ## What I Used AI For
-
-- Scaffolding the initial file structure and component shells
-- Drafting the Axios API client and Sanctum CSRF setup
-- Tailwind utility class suggestions for the table and modal layouts
-
-All logic decisions (permission gating, sensitive data flow, error handling strategy) were made independently and I can explain any part of the code.
+I used AI extensively as a pair-programming partner during development to:
+- Quickly scaffold boilerplate components, routing, and the Axios API client.
+- Iterate on the UI/UX design (e.g., suggesting a cohesive color palette, implementing floating labels, choosing the "Plus Jakarta Sans" font).
+- Rapidly build and style the UI components (Modals, Toast notifications, empty search states) using Tailwind CSS.
+- Identify and resolve TypeScript strictness errors during Vercel deployments.
 
 ## What I Would Do Differently with More Time
-
-- Add optimistic UI updates for the edit flow
-- Add a search/filter bar on the books list
-- Add a toast notification system for success/error feedback
-- Write unit tests for the permission logic and modal flows
-- Handle token expiry (401) globally with an Axios interceptor that redirects to login automatically
+- **Backend Search Integration**: I currently implemented client-side search because the provided API did not support a `search` query parameter. With more time (and backend access), I would implement server-side search to filter across all paginated pages.
+- **Global Error Handling**: Implement an Axios interceptor to catch 401 Unauthorized responses globally and automatically redirect the user to the login screen.
+- **Unit Testing**: Add unit tests specifically covering the permission-gated logic and sensitive data modal flow to ensure regressions don't expose cost prices.
 
 ## Decisions I'm Unsure About
-
-- The API response shape (nested `data.data` vs flat `data`) — I handled both cases defensively since I couldn't fully confirm the exact shape. If data doesn't render, this is the first place to check.
-- Whether pagination metadata comes in `meta` or top-level — I handle both.
+- **API Pagination Metadata Shape**: The exam brief showed pagination inside a `meta` object, but depending on the framework version, it sometimes places these properties directly on the root object. I wrote the pagination parsing defensively to support both structures just in case.
