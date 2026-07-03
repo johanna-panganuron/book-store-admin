@@ -3,7 +3,7 @@
 A clean, responsive React (Vite) admin UI for an online bookstore, built as a technical assessment for YM Cargo.
 
 ## Live Demo
-[https://book-store-admin-alpha.vercel.app](https://book-store-admin-alpha.vercel.app) *(Update this with your actual Vercel URL)*
+[https://johanna-panganuron-book-store-admin.vercel.app/](https://johanna-panganuron-book-store-admin.vercel.app/)
 
 ## Tech Stack
 - React 19 + TypeScript
