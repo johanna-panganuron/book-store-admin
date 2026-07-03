@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, LogIn } from 'lucide-react'
+import { Eye, EyeOff, LogIn, BookOpen } from 'lucide-react'
 import { login } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 
@@ -44,6 +44,9 @@ export default function LoginPage() {
     <div className="min-h-screen bg-white flex items-center justify-center px-4 animate-fade-in">
       <div className="w-full max-w-sm bg-white rounded-xl border border-gray-100 shadow-sm p-6 sm:p-8 animate-slide-up" style={{ animationFillMode: 'both', animationDelay: '0.1s' }}>
         <div className="mb-6 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 mb-4">
+            <BookOpen className="w-6 h-6" />
+          </div>
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Bookstore Admin</h1>
           <p className="text-sm text-gray-500 mt-1">Sign in to your account</p>
         </div>

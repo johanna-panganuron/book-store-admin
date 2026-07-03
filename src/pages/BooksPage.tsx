@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getBooks } from '../api/client'
 import { useAuth } from '../context/AuthContext'
-import { LogOut, Edit2, Eye, ChevronLeft, ChevronRight } from 'lucide-react'
+import { LogOut, Edit2, Eye, ChevronLeft, ChevronRight, BookOpen, BookText, User, Tag, Settings } from 'lucide-react'
 import CostPriceModal from '../components/CostPriceModal'
 import EditBookModal from '../components/EditBookModal'
 import SignOutModal from '../components/SignOutModal'
@@ -79,9 +79,14 @@ export default function BooksPage() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-sm border-b border-gray-100 px-6 py-4 flex items-center justify-between animate-fade-in">
-        <div>
-          <h1 className="text-lg font-semibold text-gray-900">Bookstore Admin</h1>
-          <p className="text-xs text-gray-500">{user?.name} · {user?.email}</p>
+        <div className="flex items-center gap-3">
+          <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600">
+            <BookOpen className="w-5 h-5" />
+          </div>
+          <div>
+            <h1 className="text-lg font-semibold text-gray-900">Bookstore Admin</h1>
+            <p className="text-xs text-gray-500">{user?.name} · {user?.email}</p>
+          </div>
         </div>
         <button
           onClick={() => setShowSignOut(true)}
@@ -130,10 +135,18 @@ export default function BooksPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-100 bg-gray-50/50">
-                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Title</th>
-                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Author</th>
-                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Retail Price</th>
-                    <th className="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Actions</th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">
+                      <div className="flex items-center gap-1.5"><BookText className="w-4 h-4 text-gray-400" /> Title</div>
+                    </th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">
+                      <div className="flex items-center gap-1.5"><User className="w-4 h-4 text-gray-400" /> Author</div>
+                    </th>
+                    <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">
+                      <div className="flex items-center gap-1.5"><Tag className="w-4 h-4 text-gray-400" /> Retail Price</div>
+                    </th>
+                    <th className="text-right px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">
+                      <div className="flex items-center justify-end gap-1.5"><Settings className="w-4 h-4 text-gray-400" /> Actions</div>
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
