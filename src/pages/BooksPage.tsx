@@ -5,6 +5,7 @@ import { LogOut, Edit2, Eye, ChevronLeft, ChevronRight, BookOpen, BookText, User
 import CostPriceModal from '../components/CostPriceModal'
 import EditBookModal from '../components/EditBookModal'
 import SignOutModal from '../components/SignOutModal'
+import Toast from '../components/Toast'
 
 interface Book {
   id: number
@@ -33,6 +34,7 @@ export default function BooksPage() {
   const [showSignOut, setShowSignOut] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
 
   const canViewCostPrice = hasPermission('books.cost_price.view')
 
@@ -87,6 +89,7 @@ export default function BooksPage() {
   const handleEditSuccess = (updated: Book) => {
     setBooks(prev => prev.map(b => b.id === updated.id ? updated : b))
     setEditBook(null)
+    setToastMessage(`Successfully updated "${updated.title}"`)
   }
 
   const formatPrice = (price: number) =>
@@ -274,6 +277,12 @@ export default function BooksPage() {
         <SignOutModal
           onClose={() => setShowSignOut(false)}
           onConfirm={logout}
+        />
+      )}
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          onClose={() => setToastMessage(null)}
         />
       )}
     </div>
